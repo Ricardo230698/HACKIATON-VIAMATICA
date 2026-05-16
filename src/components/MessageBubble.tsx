@@ -1,3 +1,4 @@
+import { CheckCircle, XCircle, Phone, Info, Stethoscope } from "lucide-react";
 import ResultPanel from "./ResultPanel";
 
 export interface CopayResult {
@@ -23,6 +24,7 @@ export interface Message {
   role: "user" | "assistant" | "system";
   content: string;
   systemType?: "info" | "success" | "error";
+  systemIcon?: "phone" | "check" | "error" | "info";
   copayResults?: CopayResult;
 }
 
@@ -32,14 +34,12 @@ interface MessageBubbleProps {
 
 function renderMarkdown(text: string) {
   const parts: (string | JSX.Element)[] = [];
-  // Split by bold, italic, and inline code patterns
   const regex = /(\*\*[^*]+\*\*|\*[^*]+\*|`[^`]+`)/g;
   let lastIndex = 0;
   let match;
   let key = 0;
 
   while ((match = regex.exec(text)) !== null) {
-    // Add text before match
     if (match.index > lastIndex) {
       parts.push(text.slice(lastIndex, match.index));
     }
@@ -80,6 +80,16 @@ function renderMarkdown(text: string) {
   return parts.length > 0 ? parts : [text];
 }
 
+function SystemIcon({ type, icon }: { type?: string; icon?: string }) {
+  const size = 14;
+  const strokeWidth = 2;
+
+  if (icon === "phone") return <Phone size={size} strokeWidth={strokeWidth} />;
+  if (type === "success" || icon === "check") return <CheckCircle size={size} strokeWidth={strokeWidth} />;
+  if (type === "error" || icon === "error") return <XCircle size={size} strokeWidth={strokeWidth} />;
+  return <Info size={size} strokeWidth={strokeWidth} />;
+}
+
 export default function MessageBubble({ msg }: MessageBubbleProps) {
   // ── System messages ──────────────────────────────────────────────────────
   if (msg.role === "system") {
@@ -94,15 +104,19 @@ export default function MessageBubble({ msg }: MessageBubbleProps) {
           style={{
             background: bgMap[msg.systemType || "info"],
             color: "#FFFFFF",
-            padding: "6px 16px",
+            padding: "6px 14px",
             borderRadius: "20px",
             fontSize: "12px",
             fontWeight: 500,
             maxWidth: "85%",
             textAlign: "center",
             boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+            display: "flex",
+            alignItems: "center",
+            gap: "6px",
           }}
         >
+          <SystemIcon type={msg.systemType} icon={msg.systemIcon} />
           {msg.content}
         </div>
       </div>
@@ -148,15 +162,7 @@ export default function MessageBubble({ msg }: MessageBubbleProps) {
             boxShadow: "0 2px 6px rgba(5,150,105,0.3)",
           }}
         >
-          <span
-            style={{
-              color: "#FFFFFF",
-              fontSize: "14px",
-              lineHeight: 1,
-            }}
-          >
-            🏥
-          </span>
+          <Stethoscope size={16} color="#FFFFFF" strokeWidth={2} />
         </div>
         <div
           style={{

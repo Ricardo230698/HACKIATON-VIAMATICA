@@ -1,3 +1,5 @@
+import { Building2, Star } from "lucide-react";
+
 interface HospitalResult {
   hospitalName: string;
   specialty: string;
@@ -44,7 +46,6 @@ export default function ResultPanel({ policy, hospitals }: ResultPanelProps) {
   };
 
   const colors = planColors[policy.plan] || planColors.Basic;
-  const bestHospital = hospitals[0]; // Already sorted by lowest copay
 
   return (
     <div className="my-4 animate-scale-in">
@@ -91,7 +92,7 @@ export default function ResultPanel({ policy, hospitals }: ResultPanelProps) {
           <div className="flex items-center justify-between mb-3">
             <div>
               <p style={{ fontSize: "11px", color: colors.badge, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.1em", margin: 0 }}>
-                Insurance Plan
+                Plan de Seguro
               </p>
               <h3 style={{ fontSize: "24px", fontWeight: 800, color: "#FFFFFF", margin: "4px 0 0 0", fontFamily: "'DM Sans', Inter, sans-serif" }}>
                 Plan {policy.plan}
@@ -109,18 +110,18 @@ export default function ResultPanel({ policy, hospitals }: ResultPanelProps) {
                 {policy.coveragePercentage}%
               </p>
               <p style={{ fontSize: "10px", color: colors.text, margin: "2px 0 0 0", fontWeight: 500 }}>
-                Coverage
+                Cobertura
               </p>
             </div>
           </div>
 
           <div className="flex gap-4" style={{ borderTop: "1px solid rgba(255,255,255,0.1)", paddingTop: "12px" }}>
             <div>
-              <p style={{ fontSize: "10px", color: colors.text, margin: 0, fontWeight: 500 }}>Patient</p>
+              <p style={{ fontSize: "10px", color: colors.text, margin: 0, fontWeight: 500 }}>Paciente</p>
               <p style={{ fontSize: "14px", color: "#FFFFFF", margin: "2px 0 0 0", fontWeight: 600 }}>{policy.patientName}</p>
             </div>
             <div>
-              <p style={{ fontSize: "10px", color: colors.text, margin: 0, fontWeight: 500 }}>Policy</p>
+              <p style={{ fontSize: "10px", color: colors.text, margin: 0, fontWeight: 500 }}>Póliza</p>
               <p style={{ fontSize: "14px", color: "#FFFFFF", margin: "2px 0 0 0", fontWeight: 600, fontFamily: "monospace" }}>{policy.policyNumber}</p>
             </div>
           </div>
@@ -142,14 +143,20 @@ export default function ResultPanel({ policy, hospitals }: ResultPanelProps) {
             background: "linear-gradient(135deg, #F9FAFB, #F3F4F6)",
             padding: "14px 16px",
             borderBottom: "1px solid #E5E7EB",
+            display: "flex",
+            alignItems: "center",
+            gap: "8px",
           }}
         >
-          <h4 style={{ fontSize: "14px", fontWeight: 700, color: "#1F2937", margin: 0, fontFamily: "'DM Sans', Inter, sans-serif" }}>
-            🏥 Hospital Options
-          </h4>
-          <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0 0" }}>
-            {hospitals[0]?.specialty} — {hospitals[0]?.serviceName}
-          </p>
+          <Building2 size={16} color="#374151" strokeWidth={2} />
+          <div>
+            <h4 style={{ fontSize: "14px", fontWeight: 700, color: "#1F2937", margin: 0, fontFamily: "'DM Sans', Inter, sans-serif" }}>
+              Opciones de Hospitales
+            </h4>
+            <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0 0" }}>
+              {hospitals[0]?.specialty} — {hospitals[0]?.serviceName}
+            </p>
+          </div>
         </div>
 
         <div style={{ padding: "4px 0" }}>
@@ -180,11 +187,13 @@ export default function ResultPanel({ policy, hospitals }: ResultPanelProps) {
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      fontSize: "14px",
                       boxShadow: isBest ? "0 2px 8px rgba(5,150,105,0.3)" : "none",
                     }}
                   >
-                    {isBest ? "⭐" : "🏥"}
+                    {isBest
+                      ? <Star size={16} color="#FFFFFF" strokeWidth={2} fill="#FFFFFF" />
+                      : <Building2 size={16} color="#9CA3AF" strokeWidth={2} />
+                    }
                   </div>
                   <div>
                     <p style={{ fontSize: "13px", fontWeight: 600, color: "#1F2937", margin: 0 }}>
@@ -203,12 +212,9 @@ export default function ResultPanel({ policy, hospitals }: ResultPanelProps) {
                             letterSpacing: "0.05em",
                           }}
                         >
-                          Best Price
+                          Mejor Precio
                         </span>
                       )}
-                    </p>
-                    <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "2px 0 0 0" }}>
-                      Base: ${h.baseCost} × {h.multiplier} = ${h.finalPrice.toFixed(2)}
                     </p>
                   </div>
                 </div>
@@ -225,30 +231,12 @@ export default function ResultPanel({ policy, hospitals }: ResultPanelProps) {
                     ${h.estimatedCopay.toFixed(2)}
                   </p>
                   <p style={{ fontSize: "10px", color: "#9CA3AF", margin: "1px 0 0 0" }}>
-                    estimated copay
+                    copago estimado
                   </p>
                 </div>
               </div>
             );
           })}
-        </div>
-
-        {/* Footer: explanation */}
-        <div
-          style={{
-            background: "#F9FAFB",
-            padding: "10px 16px",
-            borderTop: "1px solid #E5E7EB",
-          }}
-        >
-          <p style={{ fontSize: "10px", color: "#9CA3AF", margin: 0, lineHeight: 1.5 }}>
-            💡 Copay = Final Price − (Final Price × Coverage %).
-            {bestHospital && (
-              <> Best option saves you <strong style={{ color: "#059669" }}>
-                ${(hospitals[hospitals.length - 1].estimatedCopay - bestHospital.estimatedCopay).toFixed(2)}
-              </strong> vs. the most expensive option.</>
-            )}
-          </p>
         </div>
       </div>
     </div>

@@ -85,7 +85,7 @@ export async function POST(req: NextRequest) {
       console.warn("[Chat] SYMPTOM_IDENTIFIED but no Pinecone matches found");
       const fallbackText =
         signal.displayText ||
-        "I understand your symptoms. Let me also get your policy number to provide accurate copay estimates.";
+        "Entiendo tus síntomas. Necesito también tu número de póliza para darte una estimación precisa del copago.";
       return NextResponse.json({ content: fallbackText });
     }
 
@@ -171,7 +171,7 @@ async function handleCopayReady(
   const policy = await lookupPolicy(signal.data.policyNumber);
   if (!policy) {
     return NextResponse.json({
-      content: "I couldn't find that policy. Please verify your policy number.",
+      content: "No pude encontrar esa póliza. Por favor verifica tu número de póliza.",
     });
   }
 
@@ -184,7 +184,7 @@ async function handleCopayReady(
   if (matches.length === 0) {
     return NextResponse.json({
       content:
-        "I couldn't find matching medical services for your symptoms. Please try describing your symptoms differently.",
+        "No encontré servicios médicos que coincidan con tus síntomas. Por favor intenta describir tus síntomas de otra manera.",
     });
   }
 

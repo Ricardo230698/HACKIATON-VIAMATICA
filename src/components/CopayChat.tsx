@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
+import { Stethoscope, Phone, CheckCircle, XCircle } from "lucide-react";
 import MessageBubble, { type Message, type CopayResult } from "./MessageBubble";
 import TypingIndicator from "./TypingIndicator";
 import HandoffPrompt from "./HandoffPrompt";
@@ -14,7 +15,7 @@ export default function CopayChat() {
   const [isLoading, setIsLoading] = useState(false);
   const [showHandoff, setShowHandoff] = useState(false);
 
-  const bottomRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const started = useRef(false);
 
@@ -27,12 +28,15 @@ export default function CopayChat() {
   }, []);
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    const container = messagesContainerRef.current;
+    if (container) {
+      container.scrollTop = container.scrollHeight;
+    }
   }, [messages, isLoading, showHandoff]);
 
   async function initChat() {
     setIsLoading(true);
-    const seed: ApiHistory[] = [{ role: "user", content: "Hello" }];
+    const seed: ApiHistory[] = [{ role: "user", content: "Hola" }];
     const reply = await callChat(seed);
     setApiHistory(seed);
     setMessages([{ role: "assistant", content: reply.content }]);
@@ -50,7 +54,7 @@ export default function CopayChat() {
     });
     const data = await res.json();
     return {
-      content: data.content || "Sorry, something went wrong.",
+      content: data.content || "Lo siento, algo salió mal.",
       copayResults: data.copayResults,
       handoff: data.handoff,
     };
@@ -75,7 +79,6 @@ export default function CopayChat() {
     try {
       const reply = await callChat(newHistory);
 
-      // Add assistant message with inline copayResults if present
       setMessages((prev) => [
         ...prev,
         {
@@ -89,19 +92,17 @@ export default function CopayChat() {
         { role: "assistant", content: reply.content },
       ]);
 
-      // Handle copay results success message
       if (reply.copayResults) {
         setMessages((prev) => [
           ...prev,
           {
             role: "system",
-            content: `✅ Found ${reply.copayResults!.hospitals.length} hospital options for your ${reply.copayResults!.policy.plan} plan!`,
+            content: `¡Encontramos ${reply.copayResults!.hospitals.length} opciones de hospitales para tu plan ${reply.copayResults!.policy.plan}!`,
             systemType: "success",
           },
         ]);
       }
 
-      // Handle handoff
       if (reply.handoff) {
         setShowHandoff(true);
       }
@@ -110,7 +111,7 @@ export default function CopayChat() {
         ...prev,
         {
           role: "system",
-          content: "❌ Connection error. Please try again.",
+          content: "Error de conexión. Por favor intenta de nuevo.",
           systemType: "error",
         },
       ]);
@@ -128,7 +129,6 @@ export default function CopayChat() {
 
   function handleTextareaInput(e: React.ChangeEvent<HTMLTextAreaElement>) {
     setInput(e.target.value);
-    // Auto-resize
     const el = e.target;
     el.style.height = "auto";
     el.style.height = Math.min(el.scrollHeight, 120) + "px";
@@ -157,10 +157,9 @@ export default function CopayChat() {
             alignItems: "center",
             justifyContent: "center",
             boxShadow: "0 2px 8px rgba(5,150,105,0.25)",
-            fontSize: "18px",
           }}
         >
-          🏥
+          <Stethoscope size={20} color="#FFFFFF" strokeWidth={2} />
         </div>
         <div className="flex-1 min-w-0">
           <h1
@@ -172,7 +171,7 @@ export default function CopayChat() {
               margin: 0,
             }}
           >
-            Copay Estimator
+            Estimador de Copago
           </h1>
           <p
             style={{
@@ -182,7 +181,7 @@ export default function CopayChat() {
               margin: 0,
             }}
           >
-            AI-powered medical copay estimation
+            Estimación de copago médico con IA
           </p>
         </div>
         <div className="flex gap-1.5">
@@ -216,6 +215,7 @@ export default function CopayChat() {
 
       {/* ── Messages ── */}
       <div
+        ref={messagesContainerRef}
         className="flex-1 overflow-y-auto px-4 py-5"
         style={{
           background: "linear-gradient(180deg, #FFFFFF 0%, #F9FAFB 100%)",
@@ -235,10 +235,9 @@ export default function CopayChat() {
                 justifyContent: "center",
                 margin: "0 auto 16px auto",
                 boxShadow: "0 4px 16px rgba(5,150,105,0.3)",
-                fontSize: "24px",
               }}
             >
-              🏥
+              <Stethoscope size={28} color="#FFFFFF" strokeWidth={1.8} />
             </div>
             <h2
               style={{
@@ -249,10 +248,10 @@ export default function CopayChat() {
                 margin: 0,
               }}
             >
-              Copay Estimator
+              Estimador de Copago
             </h2>
             <p style={{ fontSize: "12px", color: "#6B7280", marginTop: "4px" }}>
-              Estimating your medical costs with AI
+              Calculando tus costos médicos con IA
             </p>
           </div>
         )}
@@ -277,10 +276,9 @@ export default function CopayChat() {
                 justifyContent: "center",
                 flexShrink: 0,
                 boxShadow: "0 2px 6px rgba(5,150,105,0.3)",
-                fontSize: "14px",
               }}
             >
-              🏥
+              <Stethoscope size={16} color="#FFFFFF" strokeWidth={2} />
             </div>
             <div
               style={{
@@ -304,17 +302,15 @@ export default function CopayChat() {
                 ...prev,
                 {
                   role: "system",
-                  content:
-                    "📞 Connecting you with a medical support specialist...",
+                  content: "Conectándote con un especialista de soporte médico...",
                   systemType: "info",
+                  systemIcon: "phone",
                 },
               ]);
             }}
             onDismiss={() => setShowHandoff(false)}
           />
         )}
-
-        <div ref={bottomRef} />
       </div>
 
       {/* ── Input Area ── */}
@@ -350,7 +346,7 @@ export default function CopayChat() {
             value={input}
             onChange={handleTextareaInput}
             onKeyDown={handleKeyDown}
-            placeholder="Describe your symptoms or enter your policy number..."
+            placeholder="Describe tus síntomas o ingresa tu número de póliza..."
             disabled={isLoading}
             rows={1}
             style={{
@@ -423,7 +419,7 @@ export default function CopayChat() {
             marginTop: "6px",
           }}
         >
-          AI-powered estimation · Not a substitute for medical advice
+          Estimación con IA · No sustituye el consejo médico profesional
         </p>
       </div>
     </div>

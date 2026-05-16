@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Copay Estimator — AI Medical Cost Assistant",
+  title: "Estimador de Copago — Asistente Médico con IA",
   description:
-    "AI-powered medical copay estimator. Describe your symptoms, enter your policy number, and get instant copay estimates across multiple hospitals.",
+    "Estimador de copago médico impulsado por IA. Describe tus síntomas, ingresa tu número de póliza y obtén estimaciones de copago al instante en múltiples hospitales.",
 };
 
 export default function RootLayout({

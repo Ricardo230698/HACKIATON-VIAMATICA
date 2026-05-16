@@ -1,3 +1,5 @@
+import { UserCircle, PhoneCall, ArrowRight } from "lucide-react";
+
 interface HandoffPromptProps {
   onConnect: () => void;
   onDismiss: () => void;
@@ -34,18 +36,17 @@ export default function HandoffPrompt({ onConnect, onDismiss }: HandoffPromptPro
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                fontSize: "18px",
                 boxShadow: "0 4px 12px rgba(5,150,105,0.3)",
               }}
             >
-              👤
+              <UserCircle size={22} color="#FFFFFF" strokeWidth={1.8} />
             </div>
             <div>
               <h4 style={{ fontSize: "15px", fontWeight: 700, color: "#1F2937", margin: 0, fontFamily: "'DM Sans', Inter, sans-serif" }}>
-                Need Human Assistance?
+                ¿Necesitas Asistencia Humana?
               </h4>
               <p style={{ fontSize: "12px", color: "#6B7280", margin: "2px 0 0 0" }}>
-                A medical support specialist can help you directly.
+                Un especialista de soporte médico puede ayudarte directamente.
               </p>
             </div>
           </div>
@@ -65,6 +66,10 @@ export default function HandoffPrompt({ onConnect, onDismiss }: HandoffPromptPro
                 cursor: "pointer",
                 boxShadow: "0 2px 8px rgba(5,150,105,0.3)",
                 transition: "transform 0.15s, box-shadow 0.15s",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "6px",
               }}
               onMouseDown={(e) => {
                 (e.currentTarget as HTMLButtonElement).style.transform = "scale(0.98)";
@@ -73,7 +78,8 @@ export default function HandoffPrompt({ onConnect, onDismiss }: HandoffPromptPro
                 (e.currentTarget as HTMLButtonElement).style.transform = "scale(1)";
               }}
             >
-              Yes, connect me
+              <PhoneCall size={14} strokeWidth={2} />
+              Sí, conéctame
             </button>
             <button
               onClick={onDismiss}
@@ -88,6 +94,10 @@ export default function HandoffPrompt({ onConnect, onDismiss }: HandoffPromptPro
                 border: "1px solid #D1D5DB",
                 cursor: "pointer",
                 transition: "background 0.15s",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "6px",
               }}
               onMouseEnter={(e) => {
                 (e.currentTarget as HTMLButtonElement).style.background = "#F9FAFB";
@@ -96,7 +106,8 @@ export default function HandoffPrompt({ onConnect, onDismiss }: HandoffPromptPro
                 (e.currentTarget as HTMLButtonElement).style.background = "#FFFFFF";
               }}
             >
-              No, keep going
+              <ArrowRight size={14} strokeWidth={2} />
+              No, continuar
             </button>
           </div>
         </div>
